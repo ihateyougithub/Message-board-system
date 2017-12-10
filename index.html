@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>信息管理系统首页</title>
+</head>
+
+<body>
+    <h1>学生信息管理系统</h1>
+    <button onclick="location.href='add.html'">增加</button>
+    <table>
+        <tr>
+            <th>姓名</th>
+            <th>年龄</th>
+            <th>手机</th>
+            <th>邮箱</th>
+            <th>操作</th>
+        </tr>
+    </table>
+    <script src="jquery.min.js"></script>
+    <script src="template.js"></script>
+    <script id="template" type="text/html">
+        {{each items as item index}}
+           <tr>
+               <td>{{item.name}}</td>
+               <td>{{item.age}}</td>
+               <td>{{item.phone}}</td>
+               <td>{{item.email}}</td>
+               <td>
+                   <button data-id="{{item._id}}" onclick='location.href="update.html?id={{item._id}}"'>修改</button>
+                   <button data-id="{{item._id}}">删除</button>
+               </td>
+           </tr>
+        {{/each}}
+    </script>
+    <script>
+        $.get('/show', null, function (responseData) {
+
+            var obj = {
+                items: responseData
+            }
+
+            var html = template('template', obj)
+
+            $('table').append(html);
+
+
+
+            $('td button:nth-child(2)').click(function () {
+
+                console.log(this)
+
+                var id = $(this).data('id')
+
+                $.get('/remove', { ID: id }, function (res) {
+
+                    if (res.result == '200') {
+                        alert('删除成功')
+                        location.href = '/'
+                    }
+                    else {
+                        alert('删除失败')
+                    }
+                })
+            })
+        })
+
+        // function update(value) {
+
+        //     var id = $(value).data('id');
+
+        //     sessionStorage.setItem('id', id);
+
+        //     location.href = 'update.html'
+
+        // }
+
+
+    </script>
+</body>
+
+</html>
